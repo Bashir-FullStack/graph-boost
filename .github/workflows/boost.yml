@@ -1,0 +1,23 @@
+name: Generate Activity
+on:
+  workflow_dispatch: # Allows you to trigger this manually with a button
+
+jobs:
+  make-commits:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run 200 Commits
+      run: |
+        git config --local user.email "bashirfullstack3@example.com"
+        git config --local user.name "DevBashirX"
+        
+        for i in {1..200}; do
+          echo "Commit $i" >> activity.txt
+          git add activity.txt
+          git commit -m "Automated contribution $i"
+        done
+        
+        git push origin main
