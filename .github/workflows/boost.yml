@@ -1,6 +1,8 @@
 name: Generate Activity
 on:
-  workflow_dispatch: # Allows you to trigger this manually with a button
+  schedule:
+    - cron: '0 12 * * *' # Automatically runs every day at 12:00 PM UTC
+  workflow_dispatch: # Keeps the manual button active so you can trigger it right now
 
 jobs:
   make-commits:
@@ -9,12 +11,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Run 200 Commits
+    - name: Run 700 Commits
       run: |
-        git config --local user.email "bashirfullstack3@example.com"
-        git config --local user.name "DevBashirX"
+        git config --local user.email "your-github-email@example.com"
+        git config --local user.name "Your GitHub Username"
         
-        for i in {1..200}; do
+        for i in {1..700}; do
           echo "Commit $i" >> activity.txt
           git add activity.txt
           git commit -m "Automated contribution $i"
