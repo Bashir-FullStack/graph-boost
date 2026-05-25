@@ -1,16 +1,20 @@
 name: Generate Activity and Pull Requests
 on:
   schedule:
-    - cron: '0 12 * * *' # Automatically runs every day at 12:00 PM UTC
-  workflow_dispatch: # Keeps the manual button active so you can run it right now
+    - cron: '0 12 * * *'
+  workflow_dispatch:
 
 jobs:
   run-automation:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write # Required permission to open and close official web PRs
-  
+      pull-requests: write
+    
+    # This environment variable instantly fixes the Node 20 deprecation warning
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -19,12 +23,12 @@ jobs:
 
     - name: Execute 15 Real PRs and 700 Daily Commits
       env:
-        GH_TOKEN: ${{ github.token }} # Authorizes the gh CLI tool to make web PRs
+        GH_TOKEN: ${{ github.token }}
       run: |
         git config --local user.email "bashirfullstack3@gmail.com"
         git config --local user.name "Bashir-FullStack"
         
-        # 1. LOOP FOR REAL WEB PULL REQUEST MERGES (For Silver Pull Shark)
+        # 1. LOOP FOR REAL WEB PULL REQUEST MERGES
         for i in {1..15}; do
           git checkout main
           git checkout -b real-pr-branch-$i
@@ -33,7 +37,6 @@ jobs:
           git commit -m "Automated pull request feature $i"
           git push origin real-pr-branch-$i
           
-          # Creates a real web PR and uses the server to officially merge it
           gh pr create --title "Automated PR $i" --body "Fixing template assets" --base main --head real-pr-branch-$i
           gh pr merge --merge --delete-branch
         done
